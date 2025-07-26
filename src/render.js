@@ -4,6 +4,7 @@ import {
   createNewTask,
   getTaskByPriority,
   getTasksDueThisWeek,
+  removeTask,
 } from "./appLogic";
 import deleteImg from "./images/close.svg";
 
@@ -51,9 +52,13 @@ export function renderProjectModal() {
   const confirmBtn = document.createElement("button");
   confirmBtn.textContent = "CONFIRM";
 
+  const cancelBtn = document.createElement("button");
+  cancelBtn.textContent = "CANCEL";
+
   modal.appendChild(label);
   modal.appendChild(name);
   modal.appendChild(confirmBtn);
+  modal.appendChild(cancelBtn);
   main.appendChild(modal);
 
   confirmBtn.addEventListener("click", () => {
@@ -64,15 +69,14 @@ export function renderProjectModal() {
       modal.remove();
 
       const projectLi = document.getElementById(project.id);
-      const projectsLi = Array.from(projectUl.children);
-      for (const pro of projectsLi) {
-        if (pro.classList.contains("active")) {
-          pro.classList.remove("active");
-        }
-      }
+      removeActiveClass();
       projectLi.classList.add("active");
       renderProjectTasks(project);
     }
+  });
+
+  cancelBtn.addEventListener("click", () => {
+    modal.remove();
   });
 }
 
@@ -94,7 +98,6 @@ export function renderProjects() {
       e.stopPropagation();
       projects.removeProject(project);
       renderProjects();
-      //need to make function that selects another project if active
     });
   }
 }
@@ -165,12 +168,42 @@ function renderSingleTask(task) {
   const priority = document.createElement("div");
   priority.textContent = `Priority: ${priorityValue}`;
 
+  const deleteBtn = document.createElement("img");
+  deleteBtn.className = "delete-task";
+  deleteBtn.src = deleteImg;
+
   container.appendChild(title);
   container.appendChild(description);
   container.appendChild(date);
   container.appendChild(priority);
+  container.appendChild(deleteBtn);
 
   taskContainer.appendChild(container);
+
+  deleteBtn.addEventListener("click", () => {
+    removeTask(task);
+    renderActiveLi();
+  });
+}
+
+export function renderActiveLi() {
+  if (thisWeekTasksLi.classList.contains("active")) {
+    renderThisWeekTasks();
+  } else if (highPriorityTasksLi.classList.contains("active")) {
+    renderHighPriorityTasks();
+  } else if (mediumPriorityTasksLi.classList.contains("active")) {
+    renderMediumPriorityTasks();
+  } else if (lowPriorityTasksLi.classList.contains("active")) {
+    renderLowPriorityTasks();
+  } else {
+    const projectLis = Array.from(projectUl.children);
+    for (const projectLi of projectLis) {
+      if (projectLi.classList.contains("active")) {
+        const project = projects.getProjectById(projectLi.id);
+        renderProjectTasks(project);
+      }
+    }
+  }
 }
 
 export function renderTaskModal() {
@@ -244,6 +277,9 @@ export function renderTaskModal() {
   const confirmBtn = document.createElement("button");
   confirmBtn.textContent = "CONFIRM";
 
+  const cancelBtn = document.createElement("button");
+  cancelBtn.textContent = "CANCEL";
+
   modal.appendChild(titleLabel);
   modal.appendChild(titleInput);
   modal.appendChild(descriptionLabel);
@@ -254,6 +290,7 @@ export function renderTaskModal() {
   modal.appendChild(radioContainer2);
   modal.appendChild(radioContainer3);
   modal.appendChild(confirmBtn);
+  modal.appendChild(cancelBtn);
 
   main.appendChild(modal);
 
@@ -290,11 +327,17 @@ export function renderTaskModal() {
       modal.remove();
     }
   });
+
+  cancelBtn.addEventListener("click", () => {
+    modal.remove();
+  });
 }
 
 export function renderThisWeekTasks(e) {
-  removeActiveClass();
-  e.target.classList.add("active");
+  if (e) {
+    removeActiveClass();
+    e.target.classList.add("active");
+  }
   const tasks = getTasksDueThisWeek();
   taskContainer.innerHTML = "";
   for (const task of tasks) {
@@ -303,8 +346,10 @@ export function renderThisWeekTasks(e) {
 }
 
 export function renderHighPriorityTasks(e) {
-  removeActiveClass();
-  e.target.classList.add("active");
+  if (e) {
+    removeActiveClass();
+    e.target.classList.add("active");
+  }
   const tasks = getTaskByPriority("h");
   taskContainer.innerHTML = "";
   for (const task of tasks) {
@@ -313,8 +358,10 @@ export function renderHighPriorityTasks(e) {
 }
 
 export function renderMediumPriorityTasks(e) {
-  removeActiveClass();
-  e.target.classList.add("active");
+  if (e) {
+    removeActiveClass();
+    e.target.classList.add("active");
+  }
   const tasks = getTaskByPriority("m");
   taskContainer.innerHTML = "";
   for (const task of tasks) {
@@ -323,8 +370,10 @@ export function renderMediumPriorityTasks(e) {
 }
 
 export function renderLowPriorityTasks(e) {
-  removeActiveClass();
-  e.target.classList.add("active");
+  if (e) {
+    removeActiveClass();
+    e.target.classList.add("active");
+  }
   const tasks = getTaskByPriority("l");
   taskContainer.innerHTML = "";
   for (const task of tasks) {
