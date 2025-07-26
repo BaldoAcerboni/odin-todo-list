@@ -29,5 +29,4 @@ mediumPriorityTasksLi.addEventListener("click", renderMediumPriorityTasks);
 lowPriorityTasksLi.addEventListener("click", renderLowPriorityTasks);
 
 //NEED TO DO:
-//modify tasks
 //localstorage crap

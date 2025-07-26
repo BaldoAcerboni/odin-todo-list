@@ -27,7 +27,7 @@ export function getTasksDueThisWeek() {
 //done this way as to be able to modify task from all selectors in sidebar
 export function getTaskById(id) {
   const tasks = projects.getAllTasks();
-  return tasks.filter((task) => task.id === id);
+  return tasks.filter((task) => task.id === id)[0];
 }
 
 export function removeTask(task) {
@@ -35,6 +35,17 @@ export function removeTask(task) {
     for (const t of project.taskList) {
       if (t.id === task.id) {
         project.removeTask(t);
+      }
+    }
+  }
+}
+
+//don't know if really necessary
+export function getProjectContainingTask(task) {
+  for (const project of projects.projects) {
+    for (const t of project.taskList) {
+      if (t.id === task.id) {
+        return project;
       }
     }
   }
