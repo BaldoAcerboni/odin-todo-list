@@ -28,10 +28,17 @@ main {
   margin-bottom: 10px;
   background-color: rgb(255, 255, 255);
   cursor: pointer;
+  position: relative;
 }
 
 .sidebar li.active {
   background-color: rgb(0, 255, 0);
+}
+
+.delete-project {
+  position: absolute;
+  right: 0;
+  bottom: 0;
 }
 
 .sidebar > button {

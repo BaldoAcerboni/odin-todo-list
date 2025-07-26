@@ -1,14 +1,40 @@
 import { Task, Project, AllProjects, projects } from "./class";
 import {
   createNewProject,
+  createNewTask,
   getTaskByPriority,
   getTasksDueThisWeek,
 } from "./appLogic";
+import deleteImg from "./images/close.svg";
 
 export const main = document.querySelector("main");
 export const newProjectBtn = document.querySelector(".new-project-btn");
 export const taskContainer = document.querySelector(".task-container");
 export const projectUl = document.querySelector(".project-list");
+export const thisWeekTasksLi = document.querySelector(".week-tasks");
+export const highPriorityTasksLi = document.querySelector(
+  ".high-priority-tasks"
+);
+export const mediumPriorityTasksLi = document.querySelector(
+  ".medium-priority-tasks"
+);
+export const lowPriorityTasksLi = document.querySelector(".low-priority-tasks");
+export const tasksSelectionUl = document.querySelector(".tasks-selection");
+
+export function removeActiveClass() {
+  const projectLis = Array.from(projectUl.children);
+  const tasksSelectionLis = Array.from(tasksSelectionUl.children);
+  for (const projectLi of projectLis) {
+    if (projectLi.classList.contains("active")) {
+      projectLi.classList.remove("active");
+    }
+  }
+  for (const taskSelectionLi of tasksSelectionLis) {
+    if (taskSelectionLi.classList.contains("active")) {
+      taskSelectionLi.classList.remove("active");
+    }
+  }
+}
 
 export function renderProjectModal() {
   const modal = document.createElement("div");
@@ -56,18 +82,26 @@ export function renderProjects() {
     const li = document.createElement("li");
     li.textContent = project.name;
     li.id = project.id;
+
+    const deleteBtn = document.createElement("img");
+    deleteBtn.src = deleteImg;
+    deleteBtn.className = "delete-project";
+
+    li.appendChild(deleteBtn);
     projectUl.appendChild(li);
+
+    deleteBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      projects.removeProject(project);
+      renderProjects();
+      //need to make function that selects another project if active
+    });
   }
 }
 
 export function renderProjectTasks(e) {
   if (e.target && e.target.matches("li")) {
-    const projectsLi = Array.from(e.target.parentNode.children);
-    for (const pro of projectsLi) {
-      if (pro.classList.contains("active")) {
-        pro.classList.remove("active");
-      }
-    }
+    removeActiveClass();
     e.target.classList.add("active");
     const project = projects.getProjectById(e.target.id);
 
@@ -240,18 +274,60 @@ export function renderTaskModal() {
       } else if (lowPriorityRadio.checked) {
         priority = "l";
       }
-      const task = new Task(
+
+      const activeProjectLi = document.querySelector(".active");
+      const activeProject = projects.getProjectById(activeProjectLi.id);
+      createNewTask(
+        activeProject,
         titleInput.value,
         descriptionInput.value,
         new Date(dateInput.value),
         priority,
         crypto.randomUUID()
       );
-      const activeProjectLi = document.querySelector(".active");
-      const activeProject = projects.getProjectById(activeProjectLi.id);
-      activeProject.addTask(task);
+
       renderProjectTasks(activeProject);
       modal.remove();
     }
   });
+}
+
+export function renderThisWeekTasks(e) {
+  removeActiveClass();
+  e.target.classList.add("active");
+  const tasks = getTasksDueThisWeek();
+  taskContainer.innerHTML = "";
+  for (const task of tasks) {
+    renderSingleTask(task);
+  }
+}
+
+export function renderHighPriorityTasks(e) {
+  removeActiveClass();
+  e.target.classList.add("active");
+  const tasks = getTaskByPriority("h");
+  taskContainer.innerHTML = "";
+  for (const task of tasks) {
+    renderSingleTask(task);
+  }
+}
+
+export function renderMediumPriorityTasks(e) {
+  removeActiveClass();
+  e.target.classList.add("active");
+  const tasks = getTaskByPriority("m");
+  taskContainer.innerHTML = "";
+  for (const task of tasks) {
+    renderSingleTask(task);
+  }
+}
+
+export function renderLowPriorityTasks(e) {
+  removeActiveClass();
+  e.target.classList.add("active");
+  const tasks = getTaskByPriority("l");
+  taskContainer.innerHTML = "";
+  for (const task of tasks) {
+    renderSingleTask(task);
+  }
 }
