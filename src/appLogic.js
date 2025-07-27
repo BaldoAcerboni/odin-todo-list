@@ -1,4 +1,5 @@
-import { Task, Project, AllProjects, projects } from "./class";
+import { Task, Project, AllProjects } from "./class";
+import { projects } from "./localStorage";
 
 export function createNewProject(name, id) {
   const project = new Project(name, id);

@@ -1,4 +1,5 @@
-import { Task, Project, AllProjects, projects } from "./class";
+import { Task, Project, AllProjects } from "./class";
+import { projects, updateLocalStorage } from "./localStorage";
 import {
   createNewProject,
   createNewTask,
@@ -74,6 +75,7 @@ export function renderProjectModal() {
       removeActiveClass();
       projectLi.classList.add("active");
       renderProjectTasks(project);
+      updateLocalStorage();
     }
   });
 
@@ -190,6 +192,7 @@ function renderSingleTask(task) {
   deleteBtn.addEventListener("click", () => {
     removeTask(task);
     renderActiveLi();
+    updateLocalStorage();
   });
 
   editBtn.addEventListener("click", renderEditTaskModal);
@@ -341,6 +344,7 @@ export function renderEditTaskModal(e) {
       task.priority = priority;
       renderActiveLi();
       modal.remove();
+      updateLocalStorage();
     } else {
       console.log("please check to have filled all fields");
     }
@@ -470,6 +474,9 @@ export function renderTaskModal() {
 
       renderProjectTasks(activeProject);
       modal.remove();
+      updateLocalStorage();
+    } else {
+      console.log("please fill out all fields");
     }
   });
 

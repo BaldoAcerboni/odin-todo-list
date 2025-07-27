@@ -1,6 +1,4 @@
 import "./style.css";
-import { Task, Project, AllProjects, projects } from "./class";
-import { getTaskByPriority, getTasksDueThisWeek } from "./appLogic";
 import {
   highPriorityTasksLi,
   lowPriorityTasksLi,
@@ -11,6 +9,7 @@ import {
   renderLowPriorityTasks,
   renderMediumPriorityTasks,
   renderProjectModal,
+  renderProjects,
   renderProjectTasks,
   renderThisWeekTasks,
   thisWeekTasksLi,
@@ -27,6 +26,8 @@ highPriorityTasksLi.addEventListener("click", renderHighPriorityTasks);
 mediumPriorityTasksLi.addEventListener("click", renderMediumPriorityTasks);
 
 lowPriorityTasksLi.addEventListener("click", renderLowPriorityTasks);
+
+document.addEventListener("DOMContentLoaded", renderProjects);
 
 //NEED TO DO:
 //localstorage crap

@@ -61,5 +61,3 @@ export class AllProjects {
     return tasks;
   }
 }
-
-export const projects = new AllProjects();
