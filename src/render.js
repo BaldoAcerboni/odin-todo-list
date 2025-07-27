@@ -102,6 +102,7 @@ export function renderProjects() {
       e.stopPropagation();
       projects.removeProject(project);
       renderProjects();
+      updateLocalStorage();
     });
   }
 }
